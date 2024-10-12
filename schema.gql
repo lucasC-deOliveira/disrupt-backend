@@ -1,0 +1,42 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Evaluation {
+  id: String!
+  times: String!
+  type: String!
+  card: Card!
+  cardId: String!
+}
+
+type Card {
+  id: String!
+  title: String!
+  photo: String!
+  answer: String!
+  type: String!
+  showDataTime: String!
+  deck: Deck!
+  evaluation: Evaluation
+}
+
+type Deck {
+  id: String!
+  photo: String!
+  title: String!
+  cards: [Card!]!
+}
+
+type Query {
+  getAllDecks: [Deck!]!
+}
+
+type Mutation {
+  createProduct(data: CreateDeckInput!): Deck!
+}
+
+input CreateDeckInput {
+  title: String!
+  photo: String!
+}

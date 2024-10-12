@@ -1,0 +1,42 @@
+version: '3.9'
+
+networks:
+  backendDisrupt:
+    driver: bridge
+
+services:
+  database:
+    #ESSE É O NOME DO SERVICE QUE DEVE ESTAR NO ARQUIVO DE CRIAÇÃO DE CONEXÃO
+    image: postgres
+    container_name: database_disrupt
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=disrupt
+      - POSTGRES_PASSWORD=disrupt
+      - POSTGRES_DB=disrupt
+    volumes:
+      - pgdata:/data/postgres - postgres
+    networks:
+      - backendDisrupt
+
+  app:
+    build: .
+    container_name: disrupt
+    restart: always
+    ports:
+      - 3333:3333
+      - 9229:9229 #Você pode inserir essa porta tbm pra poder usar o debug
+    volumes:
+      - .:/usr/app
+    links:
+      - database
+    depends_on:
+      - database
+    networks:
+      - backendDisrupt
+
+volumes:
+  pgdata:
+    driver: local
