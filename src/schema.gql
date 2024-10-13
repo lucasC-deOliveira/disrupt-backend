@@ -28,6 +28,7 @@ type Query {
   getAllDecks: [Deck!]!
   getDeckById(id: String!): Deck!
   getAllCardsByDeckid(id: String!, itemsPerPage: String, page: String): [Card!]!
+  getCardById(id: String!): Card!
 }
 
 type Mutation {
@@ -35,7 +36,9 @@ type Mutation {
   editDeck(data: EditDeckInput!): Deck!
   removeDeck(id: String!): Deck!
   createCard(data: CreateCardInput!): Card!
+  editCard(data: EditCardInput!): Card!
   answerCard(data: AnwerCardInput!): Card!
+  removeCard(id: String!): Card!
 }
 
 input CreateDeckInput {
@@ -58,6 +61,13 @@ input CreateCardInput {
   type: String!
   evaluation: String!
   times: Float!
+}
+
+input EditCardInput {
+  answer: String!
+  photo: String!
+  title: String!
+  id: String!
 }
 
 input AnwerCardInput {

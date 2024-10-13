@@ -16,7 +16,6 @@ export class DeckResolver {
   @Query(() => Deck)
   async getDeckById(@Args('id') id: string) {
     const deck = await this.decksService.getDeckById(id);
-    console.log(deck);
     return deck;
   }
 

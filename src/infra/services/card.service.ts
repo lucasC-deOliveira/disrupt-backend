@@ -3,6 +3,7 @@ import { PrismaService } from 'src/database/prisma/prisma.service';
 import { AnwerCardInput } from '../presentation/http/graphql/inputs/card/AnwerCardInput';
 import { AddSecondssDayjs } from '../utils/AddSecondsDayjs/AddSecondsDayjs';
 import { evalStrategy } from 'src/domain/modules/utils/StrategyEvaluationTime';
+import { EditCardInput } from '../presentation/http/graphql/inputs/card/EditCardInput';
 
 interface CreateCardInput {
   title: string;
@@ -48,8 +49,8 @@ export class CardService {
     return result;
   }
 
-  getCardById(id: string) {
-    return this.prisma.card.findUnique({
+  async getCardById(id: string) {
+    return await this.prisma.card.findUnique({
       where: {
         id,
       },
@@ -103,5 +104,24 @@ export class CardService {
         data: cardExists,
       });
     }
+  }
+
+  async removeCardById(id: string) {
+    const card = await this.prisma.card.findUnique({ where: { id } });
+    await this.prisma.card.delete({
+      where: { id: id },
+    });
+    return card;
+  }
+
+  async editCard({ photo, title, id, answer, }: EditCardInput) {
+    return this.prisma.card.update({
+      where: { id: id },
+      data: {
+        photo,
+        title,
+        answer,
+      },
+    });
   }
 }
