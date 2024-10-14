@@ -20,17 +20,17 @@ export class DeckResolver {
   }
 
   @Mutation(() => Deck)
-  createDeck(@Args('data') data: CreateDeckInput) {
-    return this.decksService.createDeck(data);
+  async createDeck(@Args('data') data: CreateDeckInput) {
+    return await this.decksService.createDeck(data);
   }
 
   @Mutation(() => Deck)
-  editDeck(@Args('data') data: EditDeckInput) {
-    return this.decksService.editDeck(data);
+  async editDeck(@Args('data') data: EditDeckInput) {
+    return await this.decksService.editDeck(data);
   }
 
   @Mutation(() => Deck)
-  removeDeck(@Args('id') id: string) {
-    return this.decksService.removeDeck(id);
+  async removeDeck(@Args('id') id: string) {
+    return await this.decksService.removeDeck(id);
   }
 }
