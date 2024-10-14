@@ -96,7 +96,7 @@ export class CardService {
       }
 
       cardExists.showDataTime = this.addSecondssDayjs.execute(
-        evalStrategy(cardExists.times, evaluation)[evaluation],
+        evalStrategy(cardExists.times, cardExists.evaluation)[evaluation],
       );
 
       await this.prisma.card.update({
