@@ -31,7 +31,7 @@ export class DeckService {
     });
   }
   async editDeck({ photo, title, id }: EditDeckInput) {
-    return this.prisma.deck.update({
+    return await this.prisma.deck.update({
       where: { id: id },
       data: {
         photo,
