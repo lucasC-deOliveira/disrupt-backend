@@ -1,7 +1,7 @@
 export const evalStrategy = (times: number, evaluation: string) => ({
   'Very Hard': 60,
   Hard: 5 * 60,
-  Nomal:
+  Normal:
     times > 1 && evaluation === 'Normal' && 60 * 30 * (times + 1) < 259200
       ? 60 * 30 * (times + 1)
       : 259200,
