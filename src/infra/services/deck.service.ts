@@ -40,10 +40,12 @@ export class DeckService {
     });
   }
   async removeDeck(id: string) {
-    const deck = this.prisma.deck.findUnique({ where: { id } });
-    this.prisma.deck.delete({
-      where: { id: id },
-    });
+    const deck = await this.prisma.deck.findUnique({ where: { id } });
+    if (!!deck) {
+      await this.prisma.deck.delete({
+        where: { id: id },
+      });
+    }
     return deck;
   }
 }
