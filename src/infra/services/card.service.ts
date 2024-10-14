@@ -96,7 +96,7 @@ export class CardService {
       }
 
       cardExists.showDataTime = this.addSecondssDayjs.execute(
-        evalStrategy(cardExists.times)[evaluation],
+        evalStrategy(cardExists.times, evaluation)[evaluation],
       );
 
       await this.prisma.card.update({
@@ -114,7 +114,7 @@ export class CardService {
     return card;
   }
 
-  async editCard({ photo, title, id, answer, }: EditCardInput) {
+  async editCard({ photo, title, id, answer }: EditCardInput) {
     return this.prisma.card.update({
       where: { id: id },
       data: {
