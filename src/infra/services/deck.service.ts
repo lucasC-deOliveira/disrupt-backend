@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma/prisma.service';
 import { CreateDeckInput } from 'src/domain/input/deck/CreateDeckInput';
 import { EditDeckInput } from '../presentation/http/graphql/inputs/deck/EditDeckInput';
-import { Deck } from '@prisma/client';
 import { SyncInput } from '../presentation/http/graphql/inputs/deck/SyncInput';
 
 @Injectable()

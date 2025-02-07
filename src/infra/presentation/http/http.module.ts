@@ -10,6 +10,7 @@ import { CardService } from 'src/infra/services/card.service';
 import { CardResolver } from './graphql/resolvers/card/card.resolver';
 import { AddSecondssDayjs } from 'src/infra/utils/AddSecondsDayjs/AddSecondsDayjs';
 import { SyncModule } from './rest/sync.module';
+import { RedisService } from 'src/infra/services/redis.service';
 
 @Module({
   imports: [
@@ -30,6 +31,8 @@ import { SyncModule } from './rest/sync.module';
     // Services
     DeckService,
     CardService,
+    RedisService,
+    // Utils
   ],
 })
 export class HttpModule { }

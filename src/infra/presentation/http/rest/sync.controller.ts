@@ -8,7 +8,6 @@ export class SyncController {
 
   @Post('/sync')
   async syncDecksAndCards(@Body() data: SyncInput): Promise<boolean> {
-    Logger.log('SyncDecksAndCards called');
     await this.deckService.syncDecksAndCards(data);
     return true;
   }
