@@ -36,7 +36,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
 
     async set(key: string, value: any, ttlSeconds?: number): Promise<void> {
         const data = typeof value === 'object' ? JSON.stringify(value) : value;
-        if (ttlSeconds) {
+        if (typeof ttlSeconds === 'number' && Number.isInteger(ttlSeconds) && ttlSeconds > 0) {
             await this.client.set(key, data, 'EX', ttlSeconds);
         } else {
             await this.client.set(key, data);
