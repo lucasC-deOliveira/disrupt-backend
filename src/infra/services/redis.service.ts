@@ -6,17 +6,19 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     public client: Redis.Redis;
 
     async onModuleInit() {
-        this.client = new Redis.Redis({
-            host: process.env.REDIS_HOST,
-            port: parseInt(process.env.REDIS_PORT),
-            db: parseInt(process.env.REDIS_DB),
-            password: process.env.REDIS_PASSWORD,
-            username: process.env.REDIS_USERNAME,
-            
-            // Outras configurações, se necessário.
-        });
+        if (process.env.REDIS_URL) {
+            // A URL deve ter o formato: redis://[username:password@]host:port/db
+            this.client = new Redis.default(process.env.REDIS_URL);
+        } else {
+            this.client = new Redis.default({
+                host: process.env.REDIS_HOST,
+                port: parseInt(process.env.REDIS_PORT),
+                db: parseInt(process.env.REDIS_DB),
+                password: process.env.REDIS_PASSWORD,
+                username: process.env.REDIS_USERNAME,
+            });
+        }
     }
-
     onModuleDestroy() {
         if (this.client) {
             this.client.quit();
