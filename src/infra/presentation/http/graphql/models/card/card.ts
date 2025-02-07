@@ -22,4 +22,7 @@ export class Card {
 
   @Field()
   showDataTime: Date;
+  
+  @Field()
+  type: string;
 }

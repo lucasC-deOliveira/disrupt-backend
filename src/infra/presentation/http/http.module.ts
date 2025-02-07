@@ -9,6 +9,7 @@ import { join } from 'path';
 import { CardService } from 'src/infra/services/card.service';
 import { CardResolver } from './graphql/resolvers/card/card.resolver';
 import { AddSecondssDayjs } from 'src/infra/utils/AddSecondsDayjs/AddSecondsDayjs';
+import { SyncModule } from './rest/sync.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AddSecondssDayjs } from 'src/infra/utils/AddSecondsDayjs/AddSecondsDayj
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
+    SyncModule
   ],
   providers: [
     // Resolvers
@@ -30,4 +32,4 @@ import { AddSecondssDayjs } from 'src/infra/utils/AddSecondsDayjs/AddSecondsDayj
     CardService,
   ],
 })
-export class HttpModule {}
+export class HttpModule { }

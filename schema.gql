@@ -40,3 +40,9 @@ input CreateDeckInput {
   title: String!
   photo: String!
 }
+
+input SyncInput {
+  title: String!
+  photo: String!
+  id: String!
+}

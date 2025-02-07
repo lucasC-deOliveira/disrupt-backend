@@ -8,7 +8,7 @@ async function bootstrap() {
     cors: { origin: '*' },
   });
   const port = 3333;
-  app.use(json({ limit: '50mb' }));
+  app.use(json({ limit: '500mb' }));
   await app.listen(port);
   Logger.log('App running on ' + port);
 }

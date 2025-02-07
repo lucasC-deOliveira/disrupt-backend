@@ -10,6 +10,7 @@ type Card {
   times: Float!
   evaluation: String!
   showDataTime: DateTime!
+  type: String!
 }
 
 """
@@ -35,6 +36,7 @@ type Mutation {
   createDeck(data: CreateDeckInput!): Deck!
   editDeck(data: EditDeckInput!): Deck!
   removeDeck(id: String!): Deck!
+  syncDecksAndCards(data: SyncInput!): Boolean!
   createCard(data: CreateCardInput!): Card!
   editCard(data: EditCardInput!): Card!
   answerCard(data: AnwerCardInput!): Card!
@@ -50,6 +52,28 @@ input EditDeckInput {
   title: String!
   photo: String!
   id: String!
+}
+
+input SyncInput {
+  decks: [DeckInput!]!
+}
+
+input DeckInput {
+  id: String!
+  title: String!
+  photo: String!
+  cards: [CardInput!]!
+}
+
+input CardInput {
+  id: String!
+  title: String!
+  answer: String!
+  photo: String!
+  showDataTime: String!
+  evaluation: String!
+  times: Float!
+  type: String!
 }
 
 input CreateCardInput {
