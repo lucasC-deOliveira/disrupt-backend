@@ -6,6 +6,16 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     public client: Redis.Redis;
 
     async onModuleInit() {
+        if (process.env.DISABLE_REDIS === 'true') {
+            // Desabilita o Redis configurando um cliente fictício
+            this.client = {
+                get: async () => null,
+                set: async () => {},
+                del: async () => 0,
+                quit: () => {},
+            } as any;
+            return;
+        }
         if (process.env.REDIS_URL) {
             // A URL deve ter o formato: redis://[username:password@]host:port/db
             this.client = new Redis.default(process.env.REDIS_URL);
