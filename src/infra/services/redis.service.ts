@@ -11,6 +11,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
             port: parseInt(process.env.REDIS_PORT),
             db: parseInt(process.env.REDIS_DB),
             password: process.env.REDIS_PASSWORD,
+            username: process.env.REDIS_USERNAME,
             
             // Outras configurações, se necessário.
         });
