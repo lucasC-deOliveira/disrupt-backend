@@ -12,23 +12,37 @@ export class DeckResolver {
     private decksService: DeckService,
     private redisService: RedisService,
   ) { }
-  
+
   @Query(() => [Deck])
   async getAllDecks() {
     const hasCache = await this.redisService.get('getAllDecks');
 
     if (!hasCache) {
       const decks = await this.decksService.getAllDecks();
-      await this.redisService.set('getAllDecks', decks);
-      return decks;
+      // converter o campo showDataTime de cada card para um objeto Date
+      const decksWithDate = decks.map(deck => ({
+        ...deck,
+        cards: deck.cards.map(card => ({
+          ...card,
+          showDataTime: new Date(card.showDataTime),
+        })),
+      }));
+      await this.redisService.set('getAllDecks', decksWithDate);
+      return decksWithDate;
     }
-    return hasCache;
-
+    return hasCache.map(deck => ({
+      ...deck,
+      cards: deck.cards.map(card => ({
+        ...card,
+        showDataTime: new Date(card.showDataTime),
+      })),
+    }));
   }
 
   @Query(() => Deck)
   async getDeckById(@Args('id') id: string) {
     const hasCache = await this.redisService.get('getDeckById' + id);
+    console.log(hasCache);
     if (!hasCache) {
       const deck = await this.decksService.getDeckById(id);
       await this.redisService.set('getDeckById' + id, deck);
