@@ -3,9 +3,9 @@ import { PrismaService } from 'src/database/prisma/prisma.service';
 import { AnwerCardInput } from '../presentation/http/graphql/inputs/card/AnwerCardInput';
 import { AddSecondssDayjs } from '../utils/AddSecondsDayjs/AddSecondsDayjs';
 import { evalStrategy } from 'src/domain/modules/utils/StrategyEvaluationTime';
-import { EditCardInput } from '../presentation/http/graphql/inputs/card/EditCardInput';
 
 interface CreateCardInput {
+  id?: string;
   title: string;
   answer: string;
   deckId: string;
@@ -13,6 +13,17 @@ interface CreateCardInput {
   type: string;
   evaluation: string;
   times: number;
+}
+
+interface EditCardInput {
+  id: string;
+  answer?: string;
+  title?: string;
+  deckId?: string;
+  showDataTime?: string;
+  type?: string;
+  evaluation?: string;
+  times?: number;
 }
 
 @Injectable()
@@ -64,6 +75,7 @@ export class CardService {
     type,
     evaluation,
     times,
+    id
   }: CreateCardInput) {
     const result = await this.prisma.card.create({
       data: {
@@ -113,12 +125,17 @@ export class CardService {
     return card;
   }
 
-  async editCard({ title, id, answer }: EditCardInput) {
+  async editCard({ title, id, answer, deckId, evaluation, showDataTime, times, type }: EditCardInput) {
     return this.prisma.card.update({
       where: { id: id },
       data: {
         title,
         answer,
+        deckId,
+        evaluation,
+        showDataTime,
+        times,
+        type
       },
     });
   }

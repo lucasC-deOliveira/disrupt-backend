@@ -4,8 +4,8 @@ import { Field, InputType } from '@nestjs/graphql';
 export class EditDeckInput {
   @Field()
   title: string;
-  @Field()
-  photo: string;
+  @Field({ nullable: true })
+  photo?: string;
   @Field()
   id: string;
 }

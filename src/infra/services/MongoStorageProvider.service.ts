@@ -65,7 +65,7 @@ export class MongoStorageProvider extends BaseStorageProvider implements OnModul
     });
 
     if (!midia) {
-      throw new Error('File not found');
+      return 
     }
 
     const fileObjectId = new ObjectId(midia.gridFsId);

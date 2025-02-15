@@ -28,7 +28,6 @@ model Card {
 
 model Deck {
   id    String @id @default(uuid()) @map("_id")
-  photo String
   title String
   cards Card[]
 }

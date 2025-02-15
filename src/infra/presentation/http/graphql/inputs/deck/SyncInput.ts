@@ -9,8 +9,8 @@ export class DeckInput {
     @Field()
     title: string;
 
-    @Field()
-    photo: string;
+    @Field({ nullable: true })
+    photo?: string;
 
     @Field(() => [CardInput])
     cards: CardInput[];

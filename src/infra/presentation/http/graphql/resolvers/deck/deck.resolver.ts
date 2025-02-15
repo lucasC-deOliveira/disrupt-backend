@@ -47,25 +47,29 @@ export class DeckResolver {
   }
 
   @Mutation(() => Deck)
-  async createDeck(@Args('data') data: CreateDeckInput): Promise<Deck> {
-    const result = await this.decksService.createDeck(data);
+  async createDeck(@Args('data') {photo, title}: CreateDeckInput): Promise<Deck> {
+    const result = await this.decksService.createDeck({ title });
+    await this.blobStorageService.uploadFile(`deck/image/${result.id}`, Buffer.from(photo));
     await this.redisService.del('getAllDecks');
     await this.redisService.del(`getDeckById${result.id}`);
     return result;
   }
 
   @Mutation(() => Deck)
-  async editDeck(@Args('data') data: EditDeckInput): Promise<Deck> {
-    const result = await this.decksService.editDeck(data);
+  async editDeck(@Args('data') {id,photo,title}: EditDeckInput): Promise<Deck> {
+    const result = await this.decksService.editDeck({id,title});
+    await this.blobStorageService.deleteFile(`deck/image/${id}`);
+    await this.blobStorageService.uploadFile(`deck/image/${result.id}`, Buffer.from(photo));
     await this.redisService.del('getAllDecks');
-    await this.redisService.del(`getDeckById${data.id}`);
-    await this.redisService.del(`getAllCardsByDeckid${data.id}`);
+    await this.redisService.del(`getDeckById${id}`);
+    await this.redisService.del(`getAllCardsByDeckid${id}`);
     return result;
   }
 
   @Mutation(() => Deck)
   async removeDeck(@Args('id') id: string): Promise<Deck> {
     const result = await this.decksService.removeDeck(id);
+    await this.blobStorageService.deleteFile(`deck/image/${id}`);
     await this.redisService.del('getAllDecks');
     await this.redisService.del(`getDeckById${id}`);
     await this.redisService.del(`getAllCardsByDeckid${id}`);

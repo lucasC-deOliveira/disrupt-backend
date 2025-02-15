@@ -12,6 +12,7 @@ type Card {
   evaluation: String!
   showDataTime: DateTime!
   type: String!
+  deckId: String!
 }
 
 """
@@ -21,7 +22,6 @@ scalar DateTime
 
 type Deck {
   id: String!
-  photo: String!
   title: String!
   cards: [Card!]!
 }
@@ -50,7 +50,7 @@ input CreateDeckInput {
 
 input EditDeckInput {
   title: String!
-  photo: String!
+  photo: String
   id: String!
 }
 

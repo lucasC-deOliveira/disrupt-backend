@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma/prisma.service';
-import { CreateDeckInput } from 'src/domain/input/deck/CreateDeckInput';
 import { EditDeckInput } from '../presentation/http/graphql/inputs/deck/EditDeckInput';
 import { SyncInput } from '../presentation/http/graphql/inputs/deck/SyncInput';
 
+interface CreateDeckInput {
+  title: string,
+  id?: string
+}
 @Injectable()
 export class DeckService {
   constructor(private prisma: PrismaService) { }
@@ -23,19 +26,18 @@ export class DeckService {
     });
   }
 
-  async createDeck({ photo, title }: CreateDeckInput) {
+  async createDeck({ title, id }: CreateDeckInput) {
     return this.prisma.deck.create({
       data: {
-        photo,
+        id,
         title,
       },
     });
   }
-  async editDeck({ photo, title, id }: EditDeckInput) {
+  async editDeck({ title, id }: EditDeckInput) {
     return await this.prisma.deck.update({
       where: { id: id },
       data: {
-        photo,
         title,
       },
       include: { cards: true },
@@ -57,8 +59,8 @@ export class DeckService {
     for (const deck of data.decks) {
       const savedDeck = await this.prisma.deck.upsert({
         where: { id: deck.id },
-        update: { title: deck.title, photo: deck.photo },
-        create: { id: deck.id, title: deck.title, photo: deck.photo },
+        update: { title: deck.title },
+        create: { id: deck.id, title: deck.title },
       });
 
       for (const card of deck.cards) {
@@ -84,4 +86,5 @@ export class DeckService {
         });
       }
     }
-  }}
+  }
+}

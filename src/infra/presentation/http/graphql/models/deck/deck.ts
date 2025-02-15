@@ -8,12 +8,8 @@ export class Deck {
   id: string;
 
   @Field()
-  photo: string;
-
-  @Field()
   title: string;
 
-  
   @Field(() => [Card])
   cards?: Card[];
 }

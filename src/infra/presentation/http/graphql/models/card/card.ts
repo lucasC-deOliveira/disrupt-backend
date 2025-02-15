@@ -28,4 +28,7 @@ export class Card {
 
   @Field()
   type: string;
+
+  @Field()
+  deckId: string;
 }
