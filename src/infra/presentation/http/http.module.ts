@@ -9,7 +9,7 @@ import { join } from 'path';
 import { CardService } from 'src/infra/services/card.service';
 import { CardResolver } from './graphql/resolvers/card/card.resolver';
 import { AddSecondssDayjs } from 'src/infra/utils/AddSecondsDayjs/AddSecondsDayjs';
-import { SyncModule } from './rest/sync.module';
+import { SyncModule } from './rest/sync/sync.module';
 import { RedisService } from 'src/infra/services/redis.service';
 import { MediaModule } from './rest/media/media.module';
 import { BlobStorageService } from 'src/infra/services/blobStorage.service';
