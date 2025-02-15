@@ -38,6 +38,7 @@ export class DeckService {
         photo,
         title,
       },
+      include: { cards: true },
     });
   }
   async removeDeck(id: string) {
@@ -45,6 +46,7 @@ export class DeckService {
     if (!!deck) {
       await this.prisma.deck.delete({
         where: { id: id },
+        include: { cards: true },
       });
     }
     return deck;
@@ -65,7 +67,6 @@ export class DeckService {
           update: {
             title: card.title,
             answer: card.answer,
-            photo: card.photo,
             showDataTime: new Date(card.showDataTime),
             evaluation: card.evaluation,
             times: card.times
@@ -74,7 +75,6 @@ export class DeckService {
             id: card.id,
             title: card.title,
             answer: card.answer,
-            photo: card.photo,
             showDataTime: new Date(card.showDataTime),
             evaluation: card.evaluation,
             times: card.times,
@@ -84,5 +84,4 @@ export class DeckService {
         });
       }
     }
-  }
-}
+  }}

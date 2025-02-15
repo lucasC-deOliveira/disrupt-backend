@@ -7,7 +7,6 @@ import { EditCardInput } from '../presentation/http/graphql/inputs/card/EditCard
 
 interface CreateCardInput {
   title: string;
-  photo: string;
   answer: string;
   deckId: string;
   showDataTime: string;
@@ -21,7 +20,7 @@ export class CardService {
   constructor(
     private prisma: PrismaService,
     private addSecondssDayjs: AddSecondssDayjs,
-  ) {}
+  ) { }
 
   getAllCardByDeckId(deckId: string, itemsPerPage = null, page = null) {
     // Definindo valores padrão se paginação não for especificada
@@ -59,7 +58,6 @@ export class CardService {
 
   async createCard({
     answer,
-    photo,
     title,
     deckId,
     showDataTime,
@@ -67,10 +65,9 @@ export class CardService {
     evaluation,
     times,
   }: CreateCardInput) {
-    return this.prisma.card.create({
+    const result = await this.prisma.card.create({
       data: {
         answer,
-        photo,
         title,
         deckId,
         showDataTime,
@@ -79,6 +76,8 @@ export class CardService {
         times,
       },
     });
+
+    return result;
   }
 
   async AnswerCard({ id, evaluation }: AnwerCardInput) {
@@ -114,11 +113,10 @@ export class CardService {
     return card;
   }
 
-  async editCard({ photo, title, id, answer }: EditCardInput) {
+  async editCard({ title, id, answer }: EditCardInput) {
     return this.prisma.card.update({
       where: { id: id },
       data: {
-        photo,
         title,
         answer,
       },

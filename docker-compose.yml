@@ -16,7 +16,21 @@ services:
       - POSTGRES_PASSWORD=disrupt
       - POSTGRES_DB=disrupt
     volumes:
-      - pgdata:/data/postgres - postgres
+      - pgdata:/data/postgres
+    networks:
+      - backendDisrupt
+
+  mongo:
+    image: mongo
+    container_name: mongo_disrupt
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=disrupt
+      - MONGO_INITDB_ROOT_PASSWORD=disrupt
+    volumes:
+      - mongo_data:/data/db
     networks:
       - backendDisrupt
 
@@ -31,8 +45,10 @@ services:
       - .:/usr/app
     links:
       - database
+      - mongo
     depends_on:
       - database
+      - mongo
     networks:
       - backendDisrupt
 
@@ -47,4 +63,6 @@ services:
 
 volumes:
   pgdata:
+    driver: local
+  mongo_data:
     driver: local

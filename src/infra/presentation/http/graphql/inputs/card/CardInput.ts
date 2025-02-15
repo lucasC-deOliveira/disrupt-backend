@@ -1,4 +1,4 @@
-import { InputType, Field } from '@nestjs/graphql';
+import { InputType, Field } from "@nestjs/graphql";
 
 @InputType()
 export class CardInput {
@@ -11,8 +11,11 @@ export class CardInput {
     @Field()
     answer: string;
 
-    @Field()
-    photo: string;
+    @Field({ nullable: true })
+    photo?: string;
+
+    @Field({ nullable: true })
+    video?: string;
 
     @Field()
     showDataTime: string;
@@ -24,5 +27,5 @@ export class CardInput {
     times: number;
 
     @Field()
-    type:string;
+    type: string;
 }

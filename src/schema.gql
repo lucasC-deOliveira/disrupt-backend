@@ -5,7 +5,8 @@
 type Card {
   id: ID!
   title: String!
-  photo: String!
+  photo: String
+  video: String
   answer: String!
   times: Float!
   evaluation: String!
@@ -55,7 +56,8 @@ input EditDeckInput {
 
 input CreateCardInput {
   answer: String!
-  photo: String!
+  photo: String
+  video: String
   title: String!
   deckId: String!
   showDataTime: String!
@@ -66,7 +68,8 @@ input CreateCardInput {
 
 input EditCardInput {
   answer: String!
-  photo: String!
+  photo: String
+  video: String
   title: String!
   id: String!
 }

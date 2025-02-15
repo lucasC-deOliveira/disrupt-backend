@@ -4,8 +4,10 @@ import { Field, InputType } from '@nestjs/graphql';
 export class CreateCardInput {
   @Field()
   answer: string;
-  @Field()
-  photo: string;
+  @Field({ nullable: true })
+  photo?: string;
+  @Field({ nullable: true })
+  video?: string;
   @Field()
   title: string;
   @Field()

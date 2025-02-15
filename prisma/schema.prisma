@@ -17,7 +17,6 @@ datasource db {
 model Card {
   id           String   @id @default(uuid()) @map("_id")
   title        String
-  photo        String
   type         String
   answer       String
   times        Int
@@ -32,4 +31,12 @@ model Deck {
   photo String
   title String
   cards Card[]
+}
+
+model Midia {
+  id       String @id @default(uuid()) @map("_id")
+  path     String @unique
+  type     String
+  ownerId  String
+  gridFsId String @unique
 }

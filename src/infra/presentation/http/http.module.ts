@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseModule } from 'src/database/database.module';
 import { DeckResolver } from './graphql/resolvers/deck/deck.resolver';
 import { DeckService } from 'src/infra/services/deck.service';
@@ -11,6 +11,10 @@ import { CardResolver } from './graphql/resolvers/card/card.resolver';
 import { AddSecondssDayjs } from 'src/infra/utils/AddSecondsDayjs/AddSecondsDayjs';
 import { SyncModule } from './rest/sync.module';
 import { RedisService } from 'src/infra/services/redis.service';
+import { MediaModule } from './rest/media/media.module';
+import { BlobStorageService } from 'src/infra/services/blobStorage.service';
+import { LocalStorageProvider } from 'src/infra/services/localStorageProvider.service';
+import { MongoStorageProvider } from 'src/infra/services/MongoStorageProvider.service';
 
 @Module({
   imports: [
@@ -21,7 +25,8 @@ import { RedisService } from 'src/infra/services/redis.service';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
-    SyncModule
+    SyncModule,
+    MediaModule
   ],
   providers: [
     // Resolvers
@@ -32,6 +37,10 @@ import { RedisService } from 'src/infra/services/redis.service';
     DeckService,
     CardService,
     RedisService,
+    BlobStorageService,
+    LocalStorageProvider,
+    MongoStorageProvider,
+    ConfigService
     // Utils
   ],
 })

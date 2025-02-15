@@ -1,4 +1,4 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { ObjectType, Field, ID } from "@nestjs/graphql";
 
 @ObjectType()
 export class Card {
@@ -8,8 +8,11 @@ export class Card {
   @Field()
   title: string;
 
-  @Field()
-  photo: string;
+  @Field({ nullable: true })
+  photo?: string;
+
+  @Field({ nullable: true })
+  video?: string;
 
   @Field()
   answer: string;
@@ -22,7 +25,7 @@ export class Card {
 
   @Field()
   showDataTime: Date;
-  
+
   @Field()
   type: string;
 }

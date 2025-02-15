@@ -4,14 +4,15 @@ import { CardService } from 'src/infra/services/card.service';
 import { CreateCardInput } from '../../inputs/card/CreateCardInput';
 import { AnwerCardInput } from '../../inputs/card/AnwerCardInput';
 import { EditCardInput } from '../../inputs/card/EditCardInput';
-// import { UseGuards } from '@nestjs/common';
-import { Inject, Logger, UseInterceptors } from '@nestjs/common';
 import { RedisService } from 'src/infra/services/redis.service';
+import { BlobStorageService } from 'src/infra/services/blobStorage.service';
 
 @Resolver(() => Card)
 export class CardResolver {
-  constructor(private cardsService: CardService,  private redisService: RedisService,
-  
+  constructor(
+    private cardsService: CardService,
+    private redisService: RedisService,
+    private blobStorageService: BlobStorageService,
   ) { }
   @Query(() => [Card])
   async getAllCardsByDeckid(
@@ -33,16 +34,55 @@ export class CardResolver {
     return hasCache;
   }
   @Mutation(() => Card)
-  async createCard(@Args('data') data: CreateCardInput) {
-    const result = await this.cardsService.createCard(data);
-    return result;
+  async createCard(@Args('data') {
+    answer,
+    photo,
+    video,
+    title,
+    deckId,
+    showDataTime,
+    evaluation,
+    times,
+    type,
+  }: CreateCardInput) {
+    const result = await this.cardsService.createCard({
+      answer,
+      title,
+      deckId,
+      showDataTime,
+      evaluation,
+      times,
+      type,
+    });
+
+    if (result.type == 'image' || result.type == 'video') {
+      await this.blobStorageService.uploadFile(`${result.type}/${result.id}`, Buffer.from(result.type == 'image' ? photo : video));
+    }
+
+    return { ...result, photo, video };
   }
 
   @Mutation(() => Card)
-  async editCard(@Args('data') data: EditCardInput) {
-    const result = await this.cardsService.editCard(data);
-    await this.redisService.del('getCardById' + data.id);
+  async editCard(@Args('data') {
+    answer,
+    photo,
+    video,
+    title,
+    id,
+  }: EditCardInput) {
+    const result = await this.cardsService.editCard({
+      answer,
+      title,
+      id
+    });
+    await this.redisService.del('getCardById' + id);
     await this.redisService.del('getAllCardsByDeckid' + result.deckId);
+    if (result.type == 'image' || result.type == 'video') {
+      await this.blobStorageService.deleteFile(`${result.type}/${result.id}`)
+    }
+    if (result.type == 'image' || result.type == 'video') {
+      await this.blobStorageService.uploadFile(`${result.type}/${result.id}`, Buffer.from(result.type == 'image' ? photo : video));
+    }
     return result;
   }
 
@@ -71,6 +111,9 @@ export class CardResolver {
     const result = await this.cardsService.removeCardById(id);
     await this.redisService.del('getAllCardsByDeckid' + result.deckId);
     await this.redisService.del('getCardById' + id);
+    if (result.type == 'image' || result.type == 'video') {
+      await this.blobStorageService.deleteFile(`${result.type}/${result.id}`)
+    }
     return result;
   }
 }

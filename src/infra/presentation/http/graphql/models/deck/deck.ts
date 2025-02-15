@@ -1,5 +1,6 @@
-import { ObjectType, Field } from '@nestjs/graphql';
-import { Card } from '../card/card';
+import { ObjectType, Field } from "@nestjs/graphql";
+import { Card } from "../card/card";
+import { Optional } from "@nestjs/common";
 
 @ObjectType()
 export class Deck {
@@ -12,6 +13,7 @@ export class Deck {
   @Field()
   title: string;
 
+  
   @Field(() => [Card])
-  cards: Card[];
+  cards?: Card[];
 }
