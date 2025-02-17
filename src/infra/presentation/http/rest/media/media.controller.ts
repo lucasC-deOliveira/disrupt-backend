@@ -13,7 +13,8 @@ export class MediaController {
         @Res() res: Response
     ): Promise<void> {
         try {
-            const blob = await this.blobStorageService.getBlob(`${type}/${id}`);
+            const decodedType = decodeURIComponent(type);
+            const blob = await this.blobStorageService.getBlob(`${decodedType}/${id}`);
             res.set({
                 'Content-Type': 'application/octet-stream',
                 'Content-Disposition': `attachment; filename="${type + id}"`,
