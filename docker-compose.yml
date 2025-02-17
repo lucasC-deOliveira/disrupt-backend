@@ -33,7 +33,21 @@ services:
       - mongo_data:/data/db
     networks:
       - backendDisrupt
-
+  # nextjs:
+  #   image: disruptfront:latest # Caminho para o Next.js dentro do app_principal
+  #   depends_on:
+  #     - app
+  #   ports:
+  #     - 3000:3000
+  #   networks:
+  #     - backendDisrupt
+  #   environment:
+  #     - DISPLAY=:0  # Configuração para apps gráficos no Electron
+  #   volumes:
+  #     - .:/nextjs
+  #     - /nextjs/node_modules
+  #     - /nextjs/.next
+  #     - /tmp/.X11-unix:/tmp/.X11-unix  # Permite exibição gráfica do Electron
   app:
     build: .
     container_name: disrupt
