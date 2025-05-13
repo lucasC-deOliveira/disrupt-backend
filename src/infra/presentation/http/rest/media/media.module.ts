@@ -6,10 +6,11 @@ import { BlobStorageService } from 'src/infra/services/blobStorage.service';
 import { ConfigService } from '@nestjs/config';
 import { LocalStorageProvider } from 'src/infra/services/localStorageProvider.service';
 import { MongoStorageProvider } from 'src/infra/services/MongoStorageProvider.service';
+import { EncryptionService } from 'src/infra/services/encryption.service';
 
 @Module({
   imports: [],
   controllers: [MediaController],
-  providers: [DeckService,PrismaService, BlobStorageService,ConfigService, LocalStorageProvider, MongoStorageProvider],
+  providers: [DeckService,PrismaService, BlobStorageService,ConfigService, LocalStorageProvider, MongoStorageProvider,EncryptionService],
 })
 export class MediaModule {}

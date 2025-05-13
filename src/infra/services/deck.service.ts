@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma/prisma.service';
 import { EditDeckInput } from '../presentation/http/graphql/inputs/deck/EditDeckInput';
 import { SyncInput } from '../presentation/http/graphql/inputs/deck/SyncInput';
+import { DeckImportInput } from '../presentation/http/graphql/inputs/deck/ImportDeckInput';
 
 interface CreateDeckInput {
   title: string,
@@ -87,4 +88,39 @@ export class DeckService {
       }
     }
   }
+
+  async importDeckAndCards({ cards, id, title }: DeckImportInput) {
+    const savedDeck = await this.prisma.deck.upsert({
+      where: { id: id },
+      update: { title: title },
+      create: { id: id, title: title },
+    });
+
+    for (const card of cards) {
+      await this.prisma.card.upsert({
+        where: { id: card.id },
+        update: {
+          title: card.title,
+          answer: card.answer,
+          showDataTime: new Date(card.showDataTime),
+          evaluation: card.evaluation,
+          times: card.times
+        },
+        create: {
+          id: card.id,
+          title: card.title,
+          answer: card.answer,
+          showDataTime: new Date(card.showDataTime),
+          evaluation: card.evaluation,
+          times: card.times,
+          type: "text",
+          deckId: savedDeck.id
+        },
+      });
+    }
+    
+    return savedDeck
+  }
+
+
 }

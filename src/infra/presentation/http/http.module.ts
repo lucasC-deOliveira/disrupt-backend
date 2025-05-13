@@ -15,6 +15,9 @@ import { MediaModule } from './rest/media/media.module';
 import { BlobStorageService } from 'src/infra/services/blobStorage.service';
 import { LocalStorageProvider } from 'src/infra/services/localStorageProvider.service';
 import { MongoStorageProvider } from 'src/infra/services/MongoStorageProvider.service';
+import { VideoCutterModule } from './rest/videoCutter/videoCutter.module';
+import { EncryptionService } from 'src/infra/services/encryption.service';
+import { SyncService } from 'src/infra/services/sync.service';
 
 @Module({
   imports: [
@@ -26,7 +29,8 @@ import { MongoStorageProvider } from 'src/infra/services/MongoStorageProvider.se
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
     }),
     SyncModule,
-    MediaModule
+    MediaModule,
+    VideoCutterModule
   ],
   providers: [
     // Resolvers
@@ -40,7 +44,9 @@ import { MongoStorageProvider } from 'src/infra/services/MongoStorageProvider.se
     BlobStorageService,
     LocalStorageProvider,
     MongoStorageProvider,
-    ConfigService
+    ConfigService,
+    EncryptionService,
+    SyncService
     // Utils
   ],
 })

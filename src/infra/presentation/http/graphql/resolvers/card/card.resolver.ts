@@ -6,6 +6,7 @@ import { AnwerCardInput } from '../../inputs/card/AnwerCardInput';
 import { EditCardInput } from '../../inputs/card/EditCardInput';
 import { RedisService } from 'src/infra/services/redis.service';
 import { BlobStorageService } from 'src/infra/services/blobStorage.service';
+import { EncryptionService } from 'src/infra/services/encryption.service';
 
 @Resolver(() => Card)
 export class CardResolver {
@@ -13,6 +14,8 @@ export class CardResolver {
     private cardsService: CardService,
     private redisService: RedisService,
     private blobStorageService: BlobStorageService,
+    private readonly encryptionService: EncryptionService,
+
   ) { }
   @Query(() => [Card])
   async getAllCardsByDeckid(
@@ -27,9 +30,18 @@ export class CardResolver {
         id,
         Number(itemsPerPage),
         Number(page),
-      );
-      await this.redisService.set('getAllCardsByDeckid' + id, result);
-      return result;
+      )
+
+      const cards = result.map(card => {
+        const title = this.encryptionService.decrypt(Buffer.from(card.title, "base64")).toString("utf-8")
+        const answer = this.encryptionService.decrypt(Buffer.from(card.answer, "base64")).toString("utf-8")
+        card.title = title
+        card.answer = answer
+        return card
+      });
+
+      await this.redisService.set('getAllCardsByDeckid' + id, cards);
+      return cards;
     }
     return hasCache;
   }
@@ -45,9 +57,12 @@ export class CardResolver {
     times,
     type,
   }: CreateCardInput) {
+
+    const encryptedTitle = this.encryptionService.encrypt(Buffer.from(title)).toString("base64")
+    const encryptedAnswer = this.encryptionService.encrypt(Buffer.from(answer)).toString("base64")
     const result = await this.cardsService.createCard({
-      answer,
-      title,
+      answer: encryptedAnswer,
+      title: encryptedTitle,
       deckId,
       showDataTime,
       evaluation,
@@ -70,9 +85,11 @@ export class CardResolver {
     title,
     id,
   }: EditCardInput) {
+    const encryptedTitle = this.encryptionService.encrypt(Buffer.from(title)).toString("base64")
+    const encryptedAnswer = this.encryptionService.encrypt(Buffer.from(answer)).toString("base64")
     const result = await this.cardsService.editCard({
-      answer,
-      title,
+      answer: encryptedAnswer,
+      title: encryptedTitle,
       id
     });
     await this.redisService.del('getCardById' + id);
@@ -90,9 +107,14 @@ export class CardResolver {
   async getCardById(@Args('id') id: string) {
     const hasCache = await this.redisService.get('getCardById' + id);
     if (!hasCache) {
-      const deck = await this.cardsService.getCardById(id);
-      await this.redisService.set('getCardById' + id, deck);
-      return deck;
+      const card = await this.cardsService.getCardById(id);
+      const title = this.encryptionService.decrypt(Buffer.from(card.title, "base64")).toString("utf-8")
+      const answer = this.encryptionService.decrypt(Buffer.from(card.answer, "base64")).toString("utf-8")
+      card.title = title
+      card.answer = answer
+
+      await this.redisService.set('getCardById' + id, card);
+      return card;
     }
     return hasCache;
   }

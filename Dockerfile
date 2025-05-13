@@ -1,5 +1,7 @@
 from node
 
+RUN apt-get update && apt-get install -y ffmpeg
+
 workdir /usr/app
 
 copy . .

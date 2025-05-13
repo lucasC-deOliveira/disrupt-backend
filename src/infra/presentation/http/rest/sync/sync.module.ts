@@ -9,10 +9,22 @@ import { AddSecondssDayjs } from 'src/infra/utils/AddSecondsDayjs/AddSecondsDayj
 import { LocalStorageProvider } from 'src/infra/services/localStorageProvider.service';
 import { ConfigService } from '@nestjs/config';
 import { SyncService } from 'src/infra/services/sync.service';
+import { EncryptionService } from 'src/infra/services/encryption.service';
 
 @Module({
   imports: [],
   controllers: [SyncController],
-  providers: [DeckService, PrismaService, CardService, BlobStorageService, MongoStorageProvider, AddSecondssDayjs, LocalStorageProvider, ConfigService, SyncService],
+  providers: [
+    DeckService,
+    PrismaService,
+    CardService,
+    BlobStorageService,
+    MongoStorageProvider,
+    AddSecondssDayjs,
+    LocalStorageProvider,
+    ConfigService,
+    SyncService,
+    EncryptionService
+  ],
 })
 export class SyncModule { }
