@@ -46,10 +46,12 @@ export class DeckService {
   }
   async removeDeck(id: string) {
     const deck = await this.prisma.deck.findUnique({ where: { id } });
-    if (!!deck) {
+    if (deck) {
+      await this.prisma.card.deleteMany({
+        where: { deckId: id },
+      });
       await this.prisma.deck.delete({
-        where: { id: id },
-        include: { cards: true },
+        where: { id: id }
       });
     }
     return deck;
@@ -118,7 +120,7 @@ export class DeckService {
         },
       });
     }
-    
+
     return savedDeck
   }
 

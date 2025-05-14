@@ -58,11 +58,15 @@ export class CardResolver {
     type,
   }: CreateCardInput) {
 
-    const encryptedTitle = this.encryptionService.encrypt(Buffer.from(title)).toString("base64")
-    const encryptedAnswer = this.encryptionService.encrypt(Buffer.from(answer)).toString("base64")
+    const encryptedTitle = this.encryptionService.encrypt(Buffer.from(title))
+    const encryptedTitleBase64 = encryptedTitle.toString("base64");
+
+    console.log("createCard")
+    const encryptedAnswer = this.encryptionService.encrypt(Buffer.from(answer))
+    const encryptedAnswerBase64 = encryptedAnswer.toString("base64");
     const result = await this.cardsService.createCard({
-      answer: encryptedAnswer,
-      title: encryptedTitle,
+      answer: encryptedAnswerBase64,
+      title: encryptedTitleBase64,
       deckId,
       showDataTime,
       evaluation,

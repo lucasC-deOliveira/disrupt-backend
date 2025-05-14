@@ -23,6 +23,7 @@ export class DeckResolver {
   @Query(() => [Deck])
   async getAllDecks(): Promise<Deck[]> {
     const hasCache = await this.redisService.get('getAllDecks');
+    console.log("getAllDecks")
 
     if (!hasCache) {
       const decks = (await this.decksService.getAllDecks()).map(deck => {
@@ -33,7 +34,7 @@ export class DeckResolver {
           return {
             ...card,
             title,
-             answer
+            answer
           }
         })
 
@@ -66,14 +67,14 @@ export class DeckResolver {
       const title = this.encryptionService.decrypt(Buffer.from(deck.title, "base64")).toString("utf-8")
       deck.title = title
       deck.cards = deck.cards.map(card => {
-          const title = this.encryptionService.decrypt(Buffer.from(card.title, "base64")).toString("utf-8")
-          const answer = this.encryptionService.decrypt(Buffer.from(card.answer, "base64")).toString("utf-8")
-          return {
-            ...card,
-            title,
-             answer
-          }
-        })
+        const title = this.encryptionService.decrypt(Buffer.from(card.title, "base64")).toString("utf-8")
+        const answer = this.encryptionService.decrypt(Buffer.from(card.answer, "base64")).toString("utf-8")
+        return {
+          ...card,
+          title,
+          answer
+        }
+      })
       await this.redisService.set(`getDeckById${id}`, deck);
       return deck;
     }
@@ -83,8 +84,9 @@ export class DeckResolver {
 
   @Mutation(() => Deck)
   async createDeck(@Args('data') { photo, title }: CreateDeckInput): Promise<Deck> {
-    const encryptedTitle = this.encryptionService.encrypt(Buffer.from(title, "utf-8"))
-    const result = await this.decksService.createDeck({ title: encryptedTitle.toString() });
+    const encryptedTitle = this.encryptionService.encrypt(Buffer.from(title))
+    const encryptedTitleBase64 = encryptedTitle.toString("base64");
+    const result = await this.decksService.createDeck({ title: encryptedTitleBase64 });
     await this.blobStorageService.uploadFile(`deck/image/${result.id}`, Buffer.from(photo));
     await this.redisService.del('getAllDecks');
     await this.redisService.del(`getDeckById${result.id}`);
@@ -93,8 +95,9 @@ export class DeckResolver {
 
   @Mutation(() => Deck)
   async editDeck(@Args('data') { id, photo, title }: EditDeckInput): Promise<Deck> {
-    const encryptedTitle = this.encryptionService.encrypt(Buffer.from(title, "utf-8"))
-    const result = await this.decksService.editDeck({ id, title: encryptedTitle.toString() });
+    const encryptedTitle = this.encryptionService.encrypt(Buffer.from(title))
+    const encryptedTitleBase64 = encryptedTitle.toString("base64");
+    const result = await this.decksService.editDeck({ id, title: encryptedTitleBase64 });
     await this.blobStorageService.deleteFile(`deck/image/${id}`);
     await this.blobStorageService.uploadFile(`deck/image/${result.id}`, Buffer.from(photo));
     await this.redisService.del('getAllDecks');
@@ -105,12 +108,22 @@ export class DeckResolver {
 
   @Mutation(() => Deck)
   async removeDeck(@Args('id') id: string): Promise<Deck> {
-    const result = await this.decksService.removeDeck(id);
-    await this.blobStorageService.deleteFile(`deck/image/${id}`);
-    await this.redisService.del('getAllDecks');
-    await this.redisService.del(`getDeckById${id}`);
-    await this.redisService.del(`getAllCardsByDeckid${id}`);
-    return result;
+    const deck = await this.getDeckById(id)
+
+    if (deck) {
+      for (let card of deck.cards) {
+        if (card.type == 'image' || card.type == 'video') {
+          await this.blobStorageService.deleteFile(`${card.type}/${card.id}`)
+        }
+      }
+      const result = await this.decksService.removeDeck(id);
+      await this.blobStorageService.deleteFile(`deck/image/${id}`);
+      await this.redisService.del('getAllDecks');
+      await this.redisService.del(`getDeckById${id}`);
+      await this.redisService.del(`getAllCardsByDeckid${id}`);
+      return result;
+    }
+    return deck
   }
 
   @Mutation(() => ImportDeckAndCardsResponse)
